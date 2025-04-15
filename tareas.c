@@ -22,7 +22,7 @@ void InsertarAlInicio(Lista *l, Tarea t);
 void InsertarAlFinal(Lista *l, Tarea t);
 void DesalojarMemoria(Lista *l);
 void Listar(Lista l);
-Nodo * BuscarPorId(Lista l, int id);
+Nodo *BuscarPorId(Lista l, int id);
 
 #define MIN_ID 1000
 
@@ -66,7 +66,8 @@ int main()
 
     printf("\n\n\n\n");
 
-    short int continuar = 1;
+    short int continuar = 1, estaEnRealizadas = 0, estaEnPendientes = 0;
+    Nodo *aux;
     while (continuar)
     {
 
@@ -101,6 +102,30 @@ int main()
 
             break;
         case '3':
+            estaEnPendientes = 1;
+            estaEnRealizadas = 1;
+
+            printf("Ingresa el ID de la tarea:\n>  ");
+            scanf("%d", &id);
+            aux = BuscarPorId(pendientes, id);
+            if (aux == NULL)
+            {
+                estaEnPendientes = 0;
+                aux = BuscarPorId(realizadas, id);
+
+                if (aux == NULL)
+                {
+                    estaEnRealizadas = 0;
+                }
+            }
+            if (estaEnPendientes){
+                printf("\n:");
+            } else if (estaEnRealizadas){
+
+            } else {
+
+            }
+
             break;
         case '4':
             break;
@@ -176,13 +201,14 @@ void Listar(Lista l)
     }
 }
 
-Nodo * BuscarPorId(Lista l, int id)
+Nodo *BuscarPorId(Lista l, int id)
 {
     Nodo *aux = l;
 
     while (aux != NULL)
     {
-        if (aux->T.TareaID == l){
+        if (aux->T.TareaID == l)
+        {
             return aux;
         }
         aux = aux->Siguiente;
@@ -190,3 +216,17 @@ Nodo * BuscarPorId(Lista l, int id)
     return NULL;
 }
 
+Nodo *BuscarPorDescripcion(Lista l, char *descripcion)
+{
+    Nodo *aux = l;
+
+    while (aux != NULL)
+    {
+        if (strcmp(descripcion, aux->T.Descripcion) >= 0)
+        {
+            return aux;
+        }
+        aux = aux->Siguiente;
+    }
+    return NULL;
+}
