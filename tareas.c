@@ -23,6 +23,8 @@ void InsertarAlFinal(Lista *l, Tarea t);
 void DesalojarMemoria(Lista *l);
 void Listar(Lista l);
 Nodo *BuscarPorId(Lista l, int id);
+Nodo *BuscarPorDescripcion(Lista l, char *descripcion);
+void ListarTarea(Tarea t);
 
 #define MIN_ID 1000
 
@@ -118,16 +120,54 @@ int main()
                     estaEnRealizadas = 0;
                 }
             }
-            if (estaEnPendientes){
-                printf("\n:");
-            } else if (estaEnRealizadas){
-
-            } else {
-
+            if (estaEnPendientes)
+            {
+                printf("\nEncontrada en la lista de tareas pendientes");
+                ListarTarea(aux->T);
+            }
+            else if (estaEnRealizadas)
+            {
+                printf("\nEncontrada en la lista de tareas realizadas");
+                ListarTarea(aux->T);
+            }
+            else
+            {
+                printf("\nTarea no encontrada...");
             }
 
             break;
-        case '4':
+        case '4': ///////////////////////////////////////////////////////////////////////////////
+            estaEnPendientes = 1;
+            estaEnRealizadas = 1;
+
+            printf("Ingresa la descripcion de la tarea:\n>  ");
+            gets(buffer);
+            aux = BuscarPorDescripcion(pendientes, buffer);
+
+            if (aux == NULL)
+            {
+                estaEnPendientes = 0;
+                aux = BuscarPorDescripcion(realizadas, buffer);
+
+                if (aux == NULL)
+                {
+                    estaEnRealizadas = 0;
+                }
+            }
+            if (estaEnPendientes)
+            {
+                printf("\nEncontrada en la lista de tareas pendientes");
+                ListarTarea(aux->T);
+            }
+            else if (estaEnRealizadas)
+            {
+                printf("\nEncontrada en la lista de tareas realizadas");
+                ListarTarea(aux->T);
+            }
+            else
+            {
+                printf("\nTarea no encontrada...");
+            }
             break;
         case '5':
             continuar = 0;
@@ -195,10 +235,14 @@ void Listar(Lista l)
     Nodo *aux = l;
     while (aux != NULL)
     {
-        Tarea t = aux->T;
-        printf("\n   ID: %d\tDuracion: %d \t %s", t.TareaID, t.Duracion, t.Descripcion);
+        ListarTarea(aux->T);
         aux = aux->Siguiente;
     }
+}
+
+void ListarTarea(Tarea t)
+{
+    printf("\n   ID: %d\tDuracion: %d \t %s", t.TareaID, t.Duracion, t.Descripcion);
 }
 
 Nodo *BuscarPorId(Lista l, int id)
