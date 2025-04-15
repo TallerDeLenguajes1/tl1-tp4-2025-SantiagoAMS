@@ -20,13 +20,17 @@ typedef Nodo *Lista;
 void CrearLista(Lista *l);
 void InsertarAlInicio(Lista *l, Tarea t);
 void InsertarAlFinal(Lista *l, Tarea t);
+void DesalojarMemoria(Lista *l);
+void Listar(Lista l);
+
+#define MIN_ID 1000
 
 int main()
 {
 
-    int id = 1000, duracion;
+    int id = MIN_ID, duracion;
     char opc = ' ', buffer[128];
-    char * pDesc;
+    char *pDesc;
 
     Lista pendientes, realizadas;
     CrearLista(&pendientes);
@@ -34,10 +38,10 @@ int main()
 
     while (1)
     {
-        printf("\nIngresa la tarea:\n> ");
+        printf("\nIngresa la tarea N %d:\n> ", (1 + id - MIN_ID));
         gets(buffer);
         pDesc = malloc(sizeof(char) * strlen(buffer));
-        strcpy(pDesc,buffer);
+        strcpy(pDesc, buffer);
 
         printf("\nIngresa la duracion de la tarea:\n> ");
         scanf("%d", &duracion);
@@ -46,30 +50,21 @@ int main()
         InsertarAlInicio(&pendientes, t);
 
         printf("\nAgregar mas tareas? (S/N)\n> ");
-        scanf("%c", &opc);
         getchar();
+        scanf("%c", &opc);
 
         if (opc == 's' || opc == 'S' || opc == '1' || opc == 'y' || opc == 'Y')
         {
             id++;
+            getchar();
             continue;
         }
         break;
     }
-    
-    Nodo * aux = pendientes;
-    while (aux !=NULL){
-        free(aux->T.Descripcion);
-        free(aux);
-        aux = aux->Siguiente;
-    }
-    aux = realizadas;
-    while (aux !=NULL){
-        free(aux->T.Descripcion);
-        free(aux);
-        aux = aux->Siguiente;
-    }
 
+    Listar(pendientes);
+    DesalojarMemoria(&pendientes);
+    DesalojarMemoria(&realizadas);
     /*
         1) Desarrolle una interfaz de carga de tareas para solicitar tareas pendientes, en la cual se
         solicite descripción y duración de la misma (el id debe ser generado automáticamente por
@@ -104,4 +99,27 @@ void InsertarAlInicio(Lista *l, Tarea t)
 void InsertarAlFinal(Lista *l, Tarea t)
 {
     // De momento es una operacion no soportada
+}
+
+void DesalojarMemoria(Lista *l)
+{
+    Nodo *aux = *l;
+    while (aux != NULL)
+    {
+        free(aux->T.Descripcion);
+        free(aux);
+        aux = aux->Siguiente;
+    }
+    free(*l);
+}
+
+void Listar(Lista l)
+{
+    Nodo *aux = l;
+    while (aux != NULL)
+    {
+        Tarea t = aux->T;
+        printf("\n\tTarea \"%d\", Dur. \"%d\": %s", t.TareaID, t.Duracion, t.Descripcion);
+        aux = aux->Siguiente;
+    }
 }
