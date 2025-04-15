@@ -18,17 +18,30 @@ typedef struct Nodo
 
 typedef Nodo *Lista;
 
+
+void CrearLista(Lista l);
+void InsertarAlInicio(Lista *l, Tarea t);
+void InsertarAlFinal(Lista *l, Tarea t);
+
 int main()
 {
 
-    int id = 1000;
+    int id = 1000, duracion;
     char opc = ' ';
     char buffer[128];
 
+    Lista tareas;
+
     while (1)
     {
-        printf("\nIngresa la tarea: \n> ");
+        printf("\nIngresa la tarea:\n> ");
         gets(buffer);
+
+        printf("\nIngresa la duracion de la tarea:\n> ");
+        scanf("%d",&duracion);
+
+        Tarea t = {id,NULL,duracion};
+        InsertarAlFinal(&tareas,t);
 
         printf("\nAgregar mas tareas? (S/N)\n> ");
         scanf("%c", &opc);
@@ -57,4 +70,21 @@ int main()
     */
 
     return 0;
+}
+
+
+void CrearLista(Lista l){
+    l = NULL;
+}
+void InsertarAlInicio(Lista *l, Tarea t)
+{
+    Nodo *n = (Nodo *)malloc(sizeof(Nodo));
+
+    n->Siguiente = *l;
+    n->T = t;
+
+    *l = n;
+}
+void InsertarAlFinal(Lista *l, Tarea t){
+    // De momento es una operacion no soportada
 }
