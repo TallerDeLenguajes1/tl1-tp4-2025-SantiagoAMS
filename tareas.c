@@ -22,6 +22,7 @@ void InsertarAlInicio(Lista *l, Tarea t);
 void InsertarAlFinal(Lista *l, Tarea t);
 void DesalojarMemoria(Lista *l);
 void Listar(Lista l);
+Nodo * BuscarPorId(Lista l, int id);
 
 #define MIN_ID 1000
 
@@ -65,7 +66,8 @@ int main()
 
     printf("\n\n\n\n");
 
-    while (1)
+    short int continuar = 1;
+    while (continuar)
     {
 
         printf("\n========================================");
@@ -79,38 +81,48 @@ int main()
         getchar();
         scanf("%c", &opc);
 
+        system("clear");
         switch (opc)
         {
         case '1':
+            printf("------ TAREAS PENDIENTES ------");
+            Listar(pendientes);
+
+            printf("------ TAREAS REALIZADAS ------");
+            Listar(realizadas);
             break;
         case '2':
+
+            printf("------ TAREAS PENDIENTES ------");
+            Listar(pendientes);
+            printf("\n-------------------------------");
+            printf("Ingresa el ID de la tarea:\n>  ");
+            scanf("%d", &id);
+
             break;
         case '3':
             break;
         case '4':
             break;
         case '5':
+            continuar = 0;
             break;
         default:
+            printf("Has ingresado una opcion inesperada...");
             break;
         }
-        break;
+
+        if (!continuar)
+        {
+            system("pause");
+            system("clear");
+        }
     }
 
-    printf("------ TAREAS PENDIENTES ------");
-    Listar(pendientes);
-
-    printf("------ TAREAS REALIZADAS ------");
-    Listar(realizadas);
-
+    printf("\n<<<<< Nos vemos >>>>>");
     DesalojarMemoria(&pendientes);
     DesalojarMemoria(&realizadas);
     /*
-        1) Desarrolle una interfaz de carga de tareas para solicitar tareas pendientes, en la cual se
-        solicite descripción y duración de la misma (el id debe ser generado automáticamente por
-        el sistema, de manera autoincremental comenzando desde el número 1000). Al cabo de
-        cada tarea consulte al usuario si desea ingresar una nueva tarea o finalizar la carga.
-
         2) Implemente una interfaz para elegir qué tareas de la lista de pendientes deben ser
         transferidas a la lista de tareas realizadas.
 
@@ -159,7 +171,22 @@ void Listar(Lista l)
     while (aux != NULL)
     {
         Tarea t = aux->T;
-        printf("\n   N: %d\tDuracion: %d \t %s", t.TareaID, t.Duracion, t.Descripcion);
+        printf("\n   ID: %d\tDuracion: %d \t %s", t.TareaID, t.Duracion, t.Descripcion);
         aux = aux->Siguiente;
     }
 }
+
+Nodo * BuscarPorId(Lista l, int id)
+{
+    Nodo *aux = l;
+
+    while (aux != NULL)
+    {
+        if (aux->T.TareaID == l){
+            return aux;
+        }
+        aux = aux->Siguiente;
+    }
+    return NULL;
+}
+
