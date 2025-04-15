@@ -9,10 +9,11 @@ typedef struct Tarea
     int Duracion; // [10, 100]
 } Tarea;
 
+
 typedef struct Nodo
 {
     Tarea T;
-    Nodo *Siguiente;
+    struct Nodo *Siguiente;
 } Nodo;
 
 typedef Nodo *Lista;
@@ -26,13 +27,14 @@ int main()
 
     while (1)
     {
-        printf("Ingresa la tarea: ");
+        printf("\nIngresa la tarea: \n> ");
         gets(buffer);
 
-        printf("\n¿Agregar mas tareas?");
+        printf("\nAgregar mas tareas? (S/N)\n> ");
         scanf("%c", &opc);
         getchar();
-        if (opc == 's' || opc == 'S' || opc == '1'){
+
+        if (opc == 's' || opc == 'S' || opc == '1' || opc == 'y' || opc == 'Y'){
             id++;
             continue;
         }
