@@ -38,18 +38,19 @@ int main()
 
     while (1)
     {
-        printf("\nIngresa la tarea N %d:\n> ", (1 + id - MIN_ID));
+        printf("\n----- Tarea N %d -----", (1 + id - MIN_ID));
+        printf("\n  Nombre:\n>   ");
         gets(buffer);
         pDesc = malloc(sizeof(char) * strlen(buffer));
         strcpy(pDesc, buffer);
 
-        printf("\nIngresa la duracion de la tarea:\n> ");
+        printf("  Duracion:\n>   ");
         scanf("%d", &duracion);
 
         Tarea t = {id, pDesc, duracion};
         InsertarAlInicio(&pendientes, t);
 
-        printf("\nAgregar mas tareas? (S/N)\n> ");
+        printf("\n\nAgregar mas tareas? (S/N)\n> ");
         getchar();
         scanf("%c", &opc);
 
@@ -62,7 +63,46 @@ int main()
         break;
     }
 
+    printf("\n\n\n\n");
+
+    while (1)
+    {
+
+        printf("\n========================================");
+        printf("\n   1  -  Listar tareas");
+        printf("\n   2  -  Transferir tarea a realizadas");
+        printf("\n   3  -  Buscar tarea por ID");
+        printf("\n   4  -  Buscar tarea por descripcion");
+        printf("\n   5  -  Salir del programa");
+        printf("\n========================================");
+        printf("\n Ingresa una opcion:\n> ");
+        getchar();
+        scanf("%c", &opc);
+
+        switch (opc)
+        {
+        case '1':
+            break;
+        case '2':
+            break;
+        case '3':
+            break;
+        case '4':
+            break;
+        case '5':
+            break;
+        default:
+            break;
+        }
+        break;
+    }
+
+    printf("------ TAREAS PENDIENTES ------");
     Listar(pendientes);
+
+    printf("------ TAREAS REALIZADAS ------");
+    Listar(realizadas);
+
     DesalojarMemoria(&pendientes);
     DesalojarMemoria(&realizadas);
     /*
@@ -119,7 +159,7 @@ void Listar(Lista l)
     while (aux != NULL)
     {
         Tarea t = aux->T;
-        printf("\n\tTarea \"%d\", Dur. \"%d\": %s", t.TareaID, t.Duracion, t.Descripcion);
+        printf("\n   N: %d\tDuracion: %d \t %s", t.TareaID, t.Duracion, t.Descripcion);
         aux = aux->Siguiente;
     }
 }
