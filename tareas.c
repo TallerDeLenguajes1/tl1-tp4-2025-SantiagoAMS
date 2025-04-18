@@ -28,7 +28,7 @@ void DesalojarMemoria(Lista *l);
 void Listar(Lista l);
 Nodo *BuscarPorId(Lista l, int id);
 Nodo *BuscarPorDescripcion(Lista l, char *descripcion);
-int *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n);
+int MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n);
 void ListarTarea(Tarea t);
 int EsConfirmacion(char opc);
 int TomarDuracion();
@@ -88,7 +88,7 @@ int main()
         printf("\n========================================");
         printf("\n Ingresa una opcion:\n> ");
         getchar();
-        scanf("%c", &opc);
+        scanf(" %c", &opc);
 
         system("cls");
 
@@ -114,17 +114,18 @@ int main()
             }
             else
             {
-                printf("\nTransferir a la lista de realizadas?");
+                getchar();
+                printf("\nTransferir a la lista de realizadas?\n>  ");
                 scanf("%c", &opc);
                 if (EsConfirmacion(opc))
                 {
                     if (MoverTarea(&pendientes, &realizadas, aux))
                     {
-                        printf("\nTarea transladada exitosamente.");
+                        printf("\nTarea transladada exitosamente.\n");
                     }
                     else
                     {
-                        printf("\nNo se pudo mover la tarea");
+                        printf("\nNo se pudo mover la tarea...\n");
                     }
                 }
             }
@@ -149,24 +150,24 @@ int main()
             }
             if (estaEnPendientes)
             {
-                printf("\nEncontrada en la lista de tareas pendientes");
+                printf("\nEncontrada en la lista de tareas pendientes\n");
                 ListarTarea(aux->T);
             }
             else if (estaEnRealizadas)
             {
-                printf("\nEncontrada en la lista de tareas realizadas");
+                printf("\nEncontrada en la lista de tareas realizadas\n");
                 ListarTarea(aux->T);
             }
             else
             {
-                printf("\nTarea no encontrada...");
+                printf("\nTarea no encontrada...\n");
             }
         }
         else if (opc == '4')
         {
             estaEnPendientes = 1;
             estaEnRealizadas = 1;
-
+            getchar();
             printf("Ingresa la descripcion de la tarea:\n>  ");
             gets(buffer);
             aux = BuscarPorDescripcion(pendientes, buffer);
@@ -183,17 +184,17 @@ int main()
             }
             if (estaEnPendientes)
             {
-                printf("\nEncontrada en la lista de tareas pendientes");
+                printf("\nEncontrada en la lista de tareas pendientes\n");
                 ListarTarea(aux->T);
             }
             else if (estaEnRealizadas)
             {
-                printf("\nEncontrada en la lista de tareas realizadas");
+                printf("\nEncontrada en la lista de tareas realizadas\n");
                 ListarTarea(aux->T);
             }
             else
             {
-                printf("\nTarea no encontrada...");
+                printf("\nTarea no encontrada...\n");
             }
         }
         else if (opc == '5')
@@ -202,9 +203,11 @@ int main()
         }
         else
         {
-            printf("Has ingresado una opcion inesperada...");
+            printf("Has ingresado una opcion inesperada...\n");
+            opc = ' ';
+            getchar();
         }
-
+        printf("\n");
         system("pause");
         system("cls");
     }
@@ -310,7 +313,7 @@ Nodo *BuscarPorId(Lista l, int id)
     return NULL;
 }
 
-int *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n)
+int MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n)
 {
 
     Nodo *aux = *lOrigen;
@@ -324,8 +327,8 @@ int *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n)
             break;
         }
 
-        aux = aux->Siguiente;
         prev = aux;
+        aux = aux->Siguiente;
     }
     if (aux == NULL)
     {
@@ -340,6 +343,7 @@ int *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n)
     {
         *lOrigen = aux->Siguiente;
     }
+    n->Siguiente = NULL;
     InsertarAlFinal(lDestino, n);
     // n->Siguiente = *lDestino;
     //*lDestino = n;
