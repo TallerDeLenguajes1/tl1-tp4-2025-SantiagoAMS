@@ -45,7 +45,7 @@ int main()
     Lista pendientes, realizadas;
     CrearLista(&pendientes);
     CrearLista(&realizadas);
-    
+
     while (1)
     {
         printf("\n----- Tarea N %d -----", (1 + id - MIN_ID));
@@ -71,12 +71,12 @@ int main()
         }
         break;
     }
-    
+
     printf("\n\n\n\n");
 
-    short int continuar = 1, estaEnRealizadas = 0, estaEnPendientes = 0;
+    short estaEnRealizadas = 0, estaEnPendientes = 0;
     Nodo *aux;
-    while (continuar)
+    while (1)
     {
 
         printf("\n========================================");
@@ -91,17 +91,17 @@ int main()
         scanf("%c", &opc);
 
         system("cls");
-        switch (opc)
+
+        if (opc == '1')
         {
-        case '1': /////////////////////////////////////////////////////////////////////////7///////////////////////////////////////
             printf("------ TAREAS PENDIENTES ------");
             Listar(pendientes);
 
             printf("------ TAREAS REALIZADAS ------");
             Listar(realizadas);
-            break;
-        case '2': /////////////////////////////////////////////////////////////////////////7///////////////////////////////////////
-
+        }
+        else if (opc == '2')
+        {
             printf("------ TAREAS PENDIENTES ------");
             Listar(pendientes);
             printf("\n-------------------------------");
@@ -128,9 +128,9 @@ int main()
                     }
                 }
             }
-
-            break;
-        case '3': /////////////////////////////////////////////////////////////////////////7///////////////////////////////////////
+        }
+        else if (opc == '3')
+        {
             estaEnPendientes = 1;
             estaEnRealizadas = 1;
 
@@ -161,9 +161,9 @@ int main()
             {
                 printf("\nTarea no encontrada...");
             }
-
-            break;
-        case '4': /////////////////////////////////////////////////////////////////////////7///////////////////////////////////////
+        }
+        else if (opc == '4')
+        {
             estaEnPendientes = 1;
             estaEnRealizadas = 1;
 
@@ -195,20 +195,18 @@ int main()
             {
                 printf("\nTarea no encontrada...");
             }
+        }
+        else if (opc == '5')
+        {
             break;
-        case '5':
-            continuar = 0;
-            break;
-        default:
+        }
+        else
+        {
             printf("Has ingresado una opcion inesperada...");
-            break;
         }
 
-        if (continuar)
-        {
-            system("pause");
-            system("cls");
-        }
+        system("pause");
+        system("cls");
     }
 
     printf("\n<<<<< Nos vemos >>>>>");
@@ -277,13 +275,14 @@ void DesalojarMemoria(Lista *l)
 
 void Listar(Lista l)
 {
-    if (l == NULL){
+    if (l == NULL)
+    {
         printf("\n\tLista vacia...");
     }
     Nodo *aux = l;
     while (aux != NULL)
     {
-        
+
         ListarTarea(aux->T);
         aux = aux->Siguiente;
     }
