@@ -18,12 +18,14 @@ typedef struct Nodo
 typedef Nodo *Lista;
 
 void CrearLista(Lista *l);
-void InsertarAlInicio(Lista *l, Tarea t);
+Nodo * GenerarNodo(Tarea t);
+void InsertarAlInicio(Lista *l, Nodo * n);
+void InsertarAlFinal(Lista *l, Nodo * n);
 void DesalojarMemoria(Lista *l);
 void Listar(Lista l);
 Nodo *BuscarPorId(Lista l, int id);
 Nodo *BuscarPorDescripcion(Lista l, char *descripcion);
-Nodo *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n);
+int *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n);
 void ListarTarea(Tarea t);
 int EsConfirmacion(char opc);
 
@@ -52,7 +54,7 @@ int main()
         scanf("%d", &duracion);
 
         Tarea t = {id, pDesc, duracion};
-        InsertarAlInicio(&pendientes, t);
+        InsertarAlFinal(&pendientes, GenerarNodo(t));
 
         printf("\n\nAgregar mas tareas? (S/N)\n> ");
         getchar();
@@ -113,7 +115,11 @@ int main()
                 scanf("%c", opc);
                 if (EsConfirmacion(opc))
                 {
-                    // MOVER
+                    if (MoverTarea(&pendientes, &realizadas, aux)){
+                        printf("\nTarea transladada exitosamente.");
+                    } else {
+                        printf("\nNo se pudo mover la tarea");
+                    }
                 }
             }
 
@@ -195,7 +201,7 @@ int main()
         if (!continuar)
         {
             system("pause");
-            system("clear");
+            system("cls");
         }
     }
 
@@ -220,14 +226,34 @@ void CrearLista(Lista *l)
     l = NULL;
 }
 
-void InsertarAlInicio(Lista *l, Tarea t)
-{
+Nodo * GenerarNodo(Tarea t){
     Nodo *n = (Nodo *)malloc(sizeof(Nodo));
-
-    n->Siguiente = *l;
     n->T = t;
+    n->Siguiente = NULL;
+    return n;
+}
 
+void InsertarAlInicio(Lista *l, Nodo * n)
+{
+    n->Siguiente = *l;
     *l = n;
+}
+
+void InsertarAlFinal(Lista *l, Nodo * n)
+{
+    if (*l == NULL)
+    {
+        *l = n;
+    }
+    else
+    {
+        Nodo *aux = *l;
+        while (aux->Siguiente != NULL)
+        {
+            aux = aux->Siguiente;
+        }
+        aux->Siguiente = n;
+    }
 }
 
 void DesalojarMemoria(Lista *l)
@@ -272,7 +298,7 @@ Nodo *BuscarPorId(Lista l, int id)
     return NULL;
 }
 
-Nodo *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n)
+int *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n)
 {
 
     Nodo *aux = *lOrigen;
@@ -290,7 +316,7 @@ Nodo *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n)
         prev = aux;
     }
     if (aux == NULL){
-        return; //Porque no se encontro lo que hay que mover
+        return 0; //Porque no se encontro lo que hay que mover
     }
 
     if (prev != NULL) // Si hay alguien detras del auxiliar
@@ -299,10 +325,12 @@ Nodo *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n)
     }
     else // O sea si la cabeza apunta al auxiliar
     {
-        lOrigen = aux->Siguiente;
+        *lOrigen = aux->Siguiente;
     }
-    n->Siguiente = lDestino;
-    lDestino = n;
+    InsertarAlFinal(lDestino,n);
+    //n->Siguiente = *lDestino;
+    //*lDestino = n;
+    return 1;
 }
 
 Nodo *BuscarPorDescripcion(Lista l, char *descripcion)
