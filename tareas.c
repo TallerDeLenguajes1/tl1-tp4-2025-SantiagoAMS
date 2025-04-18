@@ -20,18 +20,18 @@ typedef struct Nodo
 
 typedef Nodo *Lista;
 
-void CrearLista(Lista *l);
 Nodo *GenerarNodo(Tarea t);
+void CrearLista(Lista *l);
 void InsertarAlInicio(Lista *l, Nodo *n);
 void InsertarAlFinal(Lista *l, Nodo *n);
 void DesalojarMemoria(Lista *l);
-void Listar(Lista l);
-Nodo *BuscarPorId(Lista l, int id);
-Nodo *BuscarPorDescripcion(Lista l, char *descripcion);
 int MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n);
+void Listar(Lista l);
 void ListarTarea(Tarea t);
 int EsConfirmacion(char opc);
 int TomarDuracion();
+Nodo *BuscarPorId(Lista l, int id);
+Nodo *BuscarPorDescripcion(Lista l, char *descripcion);
 
 #define MIN_ID 1000
 
@@ -215,15 +215,6 @@ int main()
     printf("\n<<<<< Nos vemos >>>>>");
     DesalojarMemoria(&pendientes);
     DesalojarMemoria(&realizadas);
-    /*
-        2) Implemente una interfaz para elegir qué tareas de la lista de pendientes deben ser
-        transferidas a la lista de tareas realizadas.
-
-        3) Implemente una funcionalidad que permita listar todas las tareas pendientes y realizadas.
-
-        4) Implemente una funcionalidad que permita consultar tareas por id o palabra clave y
-        mostrarlas por pantalla, indicando si corresponde a una tarea pendiente o realizada.
-    */
 
     return 0;
 }
