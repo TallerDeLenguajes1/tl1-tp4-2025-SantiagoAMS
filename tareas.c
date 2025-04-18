@@ -9,6 +9,9 @@ typedef struct Tarea
     int Duracion; // [10, 100]
 } Tarea;
 
+#define DURACION_MIN 10
+#define DURACION_MAX 100
+
 typedef struct Nodo
 {
     Tarea T;
@@ -18,9 +21,9 @@ typedef struct Nodo
 typedef Nodo *Lista;
 
 void CrearLista(Lista *l);
-Nodo * GenerarNodo(Tarea t);
-void InsertarAlInicio(Lista *l, Nodo * n);
-void InsertarAlFinal(Lista *l, Nodo * n);
+Nodo *GenerarNodo(Tarea t);
+void InsertarAlInicio(Lista *l, Nodo *n);
+void InsertarAlFinal(Lista *l, Nodo *n);
 void DesalojarMemoria(Lista *l);
 void Listar(Lista l);
 Nodo *BuscarPorId(Lista l, int id);
@@ -28,6 +31,7 @@ Nodo *BuscarPorDescripcion(Lista l, char *descripcion);
 int *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n);
 void ListarTarea(Tarea t);
 int EsConfirmacion(char opc);
+int TomarDuracion();
 
 #define MIN_ID 1000
 
@@ -41,7 +45,7 @@ int main()
     Lista pendientes, realizadas;
     CrearLista(&pendientes);
     CrearLista(&realizadas);
-
+    
     while (1)
     {
         printf("\n----- Tarea N %d -----", (1 + id - MIN_ID));
@@ -50,8 +54,7 @@ int main()
         pDesc = malloc(sizeof(char) * strlen(buffer));
         strcpy(pDesc, buffer);
 
-        printf("  Duracion:\n>   ");
-        scanf("%d", &duracion);
+        duracion = TomarDuracion();
 
         Tarea t = {id, pDesc, duracion};
         InsertarAlFinal(&pendientes, GenerarNodo(t));
@@ -68,7 +71,7 @@ int main()
         }
         break;
     }
-
+    
     printf("\n\n\n\n");
 
     short int continuar = 1, estaEnRealizadas = 0, estaEnPendientes = 0;
@@ -87,7 +90,7 @@ int main()
         getchar();
         scanf("%c", &opc);
 
-        system("clear");
+        system("cls");
         switch (opc)
         {
         case '1': /////////////////////////////////////////////////////////////////////////7///////////////////////////////////////
@@ -102,22 +105,25 @@ int main()
             printf("------ TAREAS PENDIENTES ------");
             Listar(pendientes);
             printf("\n-------------------------------");
-            printf("Ingresa el ID de la tarea a transferir:\n>  ");
+            printf("\nIngresa el ID de la tarea a transferir:\n>  ");
             scanf("%d", &id);
             aux = BuscarPorId(pendientes, id);
             if (aux == NULL)
             {
-                printf("\nHas ingresado una ID incorrecta...");
+                printf("\nHas ingresado una ID incorrecta...\n");
             }
             else
             {
                 printf("\nTransferir a la lista de realizadas?");
-                scanf("%c", opc);
+                scanf("%c", &opc);
                 if (EsConfirmacion(opc))
                 {
-                    if (MoverTarea(&pendientes, &realizadas, aux)){
+                    if (MoverTarea(&pendientes, &realizadas, aux))
+                    {
                         printf("\nTarea transladada exitosamente.");
-                    } else {
+                    }
+                    else
+                    {
                         printf("\nNo se pudo mover la tarea");
                     }
                 }
@@ -198,7 +204,7 @@ int main()
             break;
         }
 
-        if (!continuar)
+        if (continuar)
         {
             system("pause");
             system("cls");
@@ -223,23 +229,24 @@ int main()
 
 void CrearLista(Lista *l)
 {
-    l = NULL;
+    *l = NULL;
 }
 
-Nodo * GenerarNodo(Tarea t){
+Nodo *GenerarNodo(Tarea t)
+{
     Nodo *n = (Nodo *)malloc(sizeof(Nodo));
     n->T = t;
     n->Siguiente = NULL;
     return n;
 }
 
-void InsertarAlInicio(Lista *l, Nodo * n)
+void InsertarAlInicio(Lista *l, Nodo *n)
 {
     n->Siguiente = *l;
     *l = n;
 }
 
-void InsertarAlFinal(Lista *l, Nodo * n)
+void InsertarAlFinal(Lista *l, Nodo *n)
 {
     if (*l == NULL)
     {
@@ -270,16 +277,22 @@ void DesalojarMemoria(Lista *l)
 
 void Listar(Lista l)
 {
+    if (l == NULL){
+        printf("\n\tLista vacia...");
+    }
     Nodo *aux = l;
     while (aux != NULL)
     {
+        
         ListarTarea(aux->T);
         aux = aux->Siguiente;
     }
+    printf("\n");
 }
 
 void ListarTarea(Tarea t)
 {
+
     printf("\n   ID: %d\tDuracion: %d \t %s", t.TareaID, t.Duracion, t.Descripcion);
 }
 
@@ -315,8 +328,9 @@ int *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n)
         aux = aux->Siguiente;
         prev = aux;
     }
-    if (aux == NULL){
-        return 0; //Porque no se encontro lo que hay que mover
+    if (aux == NULL)
+    {
+        return 0; // Porque no se encontro lo que hay que mover
     }
 
     if (prev != NULL) // Si hay alguien detras del auxiliar
@@ -327,8 +341,8 @@ int *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n)
     {
         *lOrigen = aux->Siguiente;
     }
-    InsertarAlFinal(lDestino,n);
-    //n->Siguiente = *lDestino;
+    InsertarAlFinal(lDestino, n);
+    // n->Siguiente = *lDestino;
     //*lDestino = n;
     return 1;
 }
@@ -351,4 +365,24 @@ Nodo *BuscarPorDescripcion(Lista l, char *descripcion)
 int EsConfirmacion(char opc)
 {
     return (opc == 's' || opc == 'S' || opc == '1' || opc == 'y' || opc == 'Y');
+}
+
+int TomarDuracion()
+{
+    int ret = DURACION_MIN - 1;
+
+    do
+    {
+        printf("\n  Duracion:\n>  ");
+        scanf("%d", &ret);
+        if (ret > DURACION_MAX || ret < DURACION_MIN)
+        {
+            printf("\nERROR, LA DURACION DEBE ESTAR ENTRE %d Y %d", DURACION_MIN, DURACION_MAX);
+        }
+        else
+        {
+            break;
+        }
+    } while (1);
+    return ret;
 }
