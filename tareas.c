@@ -19,12 +19,13 @@ typedef Nodo *Lista;
 
 void CrearLista(Lista *l);
 void InsertarAlInicio(Lista *l, Tarea t);
-void InsertarAlFinal(Lista *l, Tarea t);
 void DesalojarMemoria(Lista *l);
 void Listar(Lista l);
 Nodo *BuscarPorId(Lista l, int id);
 Nodo *BuscarPorDescripcion(Lista l, char *descripcion);
+Nodo *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n);
 void ListarTarea(Tarea t);
+int EsConfirmacion(char opc);
 
 #define MIN_ID 1000
 
@@ -57,7 +58,7 @@ int main()
         getchar();
         scanf("%c", &opc);
 
-        if (opc == 's' || opc == 'S' || opc == '1' || opc == 'y' || opc == 'Y')
+        if (EsConfirmacion(opc))
         {
             id++;
             getchar();
@@ -87,23 +88,37 @@ int main()
         system("clear");
         switch (opc)
         {
-        case '1':
+        case '1': /////////////////////////////////////////////////////////////////////////7///////////////////////////////////////
             printf("------ TAREAS PENDIENTES ------");
             Listar(pendientes);
 
             printf("------ TAREAS REALIZADAS ------");
             Listar(realizadas);
             break;
-        case '2':
+        case '2': /////////////////////////////////////////////////////////////////////////7///////////////////////////////////////
 
             printf("------ TAREAS PENDIENTES ------");
             Listar(pendientes);
             printf("\n-------------------------------");
-            printf("Ingresa el ID de la tarea:\n>  ");
+            printf("Ingresa el ID de la tarea a transferir:\n>  ");
             scanf("%d", &id);
+            aux = BuscarPorId(pendientes, id);
+            if (aux == NULL)
+            {
+                printf("\nHas ingresado una ID incorrecta...");
+            }
+            else
+            {
+                printf("\nTransferir a la lista de realizadas?");
+                scanf("%c", opc);
+                if (EsConfirmacion(opc))
+                {
+                    // MOVER
+                }
+            }
 
             break;
-        case '3':
+        case '3': /////////////////////////////////////////////////////////////////////////7///////////////////////////////////////
             estaEnPendientes = 1;
             estaEnRealizadas = 1;
 
@@ -136,7 +151,7 @@ int main()
             }
 
             break;
-        case '4': ///////////////////////////////////////////////////////////////////////////////
+        case '4': /////////////////////////////////////////////////////////////////////////7///////////////////////////////////////
             estaEnPendientes = 1;
             estaEnRealizadas = 1;
 
@@ -204,6 +219,7 @@ void CrearLista(Lista *l)
 {
     l = NULL;
 }
+
 void InsertarAlInicio(Lista *l, Tarea t)
 {
     Nodo *n = (Nodo *)malloc(sizeof(Nodo));
@@ -212,10 +228,6 @@ void InsertarAlInicio(Lista *l, Tarea t)
     n->T = t;
 
     *l = n;
-}
-void InsertarAlFinal(Lista *l, Tarea t)
-{
-    // De momento es una operacion no soportada
 }
 
 void DesalojarMemoria(Lista *l)
@@ -251,7 +263,7 @@ Nodo *BuscarPorId(Lista l, int id)
 
     while (aux != NULL)
     {
-        if (aux->T.TareaID == l)
+        if (aux->T.TareaID == id)
         {
             return aux;
         }
@@ -260,17 +272,55 @@ Nodo *BuscarPorId(Lista l, int id)
     return NULL;
 }
 
+Nodo *MoverTarea(Lista *lOrigen, Lista *lDestino, Nodo *n)
+{
+
+    Nodo *aux = *lOrigen;
+    Nodo *prev = NULL;
+
+    while (aux != NULL)
+    {
+
+        if (aux == n)
+        {
+            break;
+        }
+
+        aux = aux->Siguiente;
+        prev = aux;
+    }
+    if (aux == NULL){
+        return; //Porque no se encontro lo que hay que mover
+    }
+
+    if (prev != NULL) // Si hay alguien detras del auxiliar
+    {
+        prev->Siguiente = aux->Siguiente;
+    }
+    else // O sea si la cabeza apunta al auxiliar
+    {
+        lOrigen = aux->Siguiente;
+    }
+    n->Siguiente = lDestino;
+    lDestino = n;
+}
+
 Nodo *BuscarPorDescripcion(Lista l, char *descripcion)
 {
     Nodo *aux = l;
 
     while (aux != NULL)
     {
-        if (strcmp(descripcion, aux->T.Descripcion) >= 0)
+        if (strstr(descripcion, aux->T.Descripcion) != NULL)
         {
             return aux;
         }
         aux = aux->Siguiente;
     }
     return NULL;
+}
+
+int EsConfirmacion(char opc)
+{
+    return (opc == 's' || opc == 'S' || opc == '1' || opc == 'y' || opc == 'Y');
 }
